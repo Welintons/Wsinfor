@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jerusalém FM 92.7</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-500 to-blue-700 flex items-center justify-center p-4">
+  <div class="bg-white bg-opacity-90 backdrop-filter backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-10 w-full max-w-sm border border-blue-400 transform transition-all duration-500 hover:scale-105 hover:shadow-4xl relative overflow-hidden">
+    <!-- Gradiente de fundo -->
+    <div class="absolute inset-0 bg-gradient-to-tr from-blue-100/50 to-indigo-100/50 -z-10 rounded-3xl"></div>
+
+    <h1 class="text-4xl md:text-5xl font-extrabold text-center text-blue-900 mb-2 font-inter tracking-tight leading-tight">
+      Jerusalém FM <span class="text-blue-600">92.7</span>
+    </h1>
+    <p class="text-md md:text-lg text-center text-gray-700 mb-8 font-light italic">
+      A sintonia da sua fé.
+    </p>
+
+    <div class="text-center">
+      <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-8 shadow-xl border border-gray-200">
+        <!-- Imagem de Capa da Rádio -->
+        <img
+          src="https://lh3.googleusercontent.com/pw/AP1GczOGKDn1xCjAXxSu8YbHZz8UEiii9Y846heUFqy4tFg_nvjNrXVps48z5kFl_aJOII-Eexi5luNUJoYIIZZyFpiXqvW4lQP_9JDflQKl1s5LJ3-lDbTD76tdR0nrhAYkkPXrPnNeNO7t40i6be1jmdlp9g=w720-h720-s-no-gm?authuser=0"
+          alt="Capa da Rádio Jerusalém FM"
+          class="w-full h-full object-cover"
+          onerror="this.onerror=null; this.src='https://placehold.co/400x400/B3E0FF/0A2342?text=Erro+ao+Carregar+Imagem';"
+        />
+        <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+          <span class="text-white text-2xl font-bold drop-shadow-lg">Ao Vivo</span>
+        </div>
+      </div>
+
+      <audio id="audioPlayer" src="https://stream.zeno.fm/u5nz2exv498uv" preload="auto"></audio>
+
+      <div class="flex flex-col items-center gap-6">
+        <!-- Botão de Play/Pause -->
+        <button
+          id="playPauseBtn"
+          class="bg-blue-700 text-white p-5 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-400 relative group"
+          aria-label="Reproduzir rádio"
+        >
+          <div id="iconWrapper" class="transition-transform duration-300">
+            <i id="playPauseIcon" class="lucide lucide-play-circle w-14 h-14"></i>
+          </div>
+          <span id="loadingStatus" class="absolute text-sm text-white animate-pulse hidden">Carregando...</span>
+        </button>
+
+        <!-- Controle de Volume -->
+        <div class="flex items-center w-full max-w-xs bg-gray-100 rounded-full p-2 shadow-inner">
+          <button id="muteBtn" class="p-2 text-gray-600 hover:text-blue-600 transition-colors mr-2" aria-label="Mutar">
+            <i id="volumeIcon" class="lucide lucide-volume-2 w-7 h-7"></i>
+          </button>
+          <input
+            id="volumeSlider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.7"
+            class="w-full h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer"
+            aria-label="Controle de volume"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Inicializar ícones Lucide
+    lucide.createIcons();
+
+    const audio = document.getElementById("audioPlayer");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const playPauseIcon = document.getElementById("playPauseIcon");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const muteBtn = document.getElementById("muteBtn");
+    const volumeIcon = document.getElementById("volumeIcon");
+    const loadingStatus = document.getElementById("loadingStatus");
+
+    let isPlaying = false;
+    let isMuted = false;
+
+    function updateIcons() {
+      if (isPlaying) {
+        playPauseIcon.setAttribute("data-lucide", "pause-circle");
+        playPauseBtn.classList.add("animate-pulse");
+      } else {
+        playPauseIcon.setAttribute("data-lucide", "play-circle");
+        playPauseBtn.classList.remove("animate-pulse");
+      }
+
+      if (isMuted || audio.volume === 0) {
+        volumeIcon.setAttribute("data-lucide", "volume-x");
+      } else {
+        volumeIcon.setAttribute("data-lucide", "volume-2");
+      }
+
+      lucide.createIcons();
+    }
+
+    playPauseBtn.addEventListener("click", () => {
+      if (!isPlaying) {
+        audio.play().catch(e => {
+          console.error("Erro ao tentar reproduzir:", e);
+        });
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      isPlaying = true;
+      loadingStatus.classList.add("hidden");
+      updateIcons();
+    });
+
+    audio.addEventListener("pause", () => {
+      isPlaying = false;
+      updateIcons();
+    });
+
+    volumeSlider.addEventListener("input", (e) => {
+      const newVolume = parseFloat(e.target.value);
+      audio.volume = newVolume;
+      isMuted = newVolume === 0;
+      audio.muted = isMuted;
+      updateIcons();
+    });
+
+    muteBtn.addEventListener("click", () => {
+      isMuted = !isMuted;
+      audio.muted = isMuted;
+      updateIcons();
+    });
+
+    // Inicializar volume
+    audio.volume = parseFloat(volumeSlider.value);
+    updateIcons();
+  </script>
+</body>
+</html>
