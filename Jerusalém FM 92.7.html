@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carregando App...</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+    .versiculo {
+      font-size: 1.2rem;
+      max-width: 80%;
+      color: #ccc;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+    .carregando {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #888;
+    }
+    .contador {
+      font-size: 2rem;
+      color: #00ffff;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://lh3.googleusercontent.com/pw/AP1GczOGKDn1xCjAXxSu8YbHZz8UEiii9Y846heUFqy4tFg_nvjNrXVps48z5kFl_aJOII-Eexi5luNUJoYIIZZyFpiXqvW4lQP_9JDflQKl1s5LJ3-lDbTD76tdR0nrhAYkkPXrPnNeNO7t40i6be1jmdlp9g=w720-h720-s-no-gm?authuser=0" alt="Logo">
+
+  <div class="versiculo" id="mensagem"></div>
+  <div class="carregando">Carregando o app em <span class="contador" id="contador">5</span> segundos...</div>
+
+  <script>
+    const mensagensBiblicas = [
+      "O Senhor é o meu pastor e nada me faltará. – Salmos 23:1",
+      "Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará. – Salmos 37:5",
+      "Não temas, porque eu sou contigo. – Isaías 41:10",
+      "Tudo posso naquele que me fortalece. – Filipenses 4:13",
+      "Confia no Senhor de todo o teu coração. – Provérbios 3:5",
+      "Alegrai-vos na esperança, sede pacientes na tribulação. – Romanos 12:12",
+      "O Senhor é bom, um refúgio em tempos de angústia. – Naum 1:7",
+      "Buscai primeiro o Reino de Deus. – Mateus 6:33"
+    ];
+
+    // Mostra versículo aleatório
+    const msg = mensagensBiblicas[Math.floor(Math.random() * mensagensBiblicas.length)];
+    document.getElementById("mensagem").textContent = msg;
+
+    // Contador
+    let tempo = 5;
+    const contador = document.getElementById("contador");
+
+    const intervalo = setInterval(() => {
+      tempo--;
+      contador.textContent = tempo;
+
+      if (tempo <= 0) {
+        clearInterval(intervalo);
+        carregarApp();
+      }
+    }, 1000);
+
+    // Função que abre o app
+    function carregarApp() {
+      const url = "https://raw.githubusercontent.com/Welintons/Wsinfor/main/Jerusal%C3%A9m%20fm";
+      fetch(url)
+        .then(res => res.text())
+        .then(conteudo => {
+          const blob = new Blob([conteudo], { type: "text/html" });
+          const link = URL.createObjectURL(blob);
+          window.location.href = link; // Abre na MESMA aba
+        })
+        .catch(err => {
+          alert("Erro ao carregar o app. 😢");
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
