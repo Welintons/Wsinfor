@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Caixas de Mensagens</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .mensagem {
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+    .separador {
+      border-top: 1px solid #ccc;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h2>💬 Caixas de Mensagens com Auto Adição</h2>
+
+  <div id="caixasContainer"></div>
+
+  <div class="separador"></div>
+
+  <button onclick="salvarMensagem()">💾 Salvar Mensagem</button>
+  <button onclick="apagarMensagens()">🧨 Apagar (com código)</button>
+
+  <script>
+    const container = document.getElementById('caixasContainer');
+    let mensagens = JSON.parse(localStorage.getItem('mensagens')) || [];
+
+    function criarCaixa(texto = '') {
+      const div = document.createElement('div');
+      div.className = 'mensagem';
+
+      const textarea = document.createElement('textarea');
+      textarea.value = texto;
+      div.appendChild(textarea);
+
+      container.appendChild(div);
+    }
+
+    // Inicializa com as mensagens salvas
+    mensagens.forEach(msg => criarCaixa(msg));
+
+    function salvarMensagem() {
+      const caixas = document.querySelectorAll('textarea');
+      mensagens = Array.from(caixas).map(caixa => caixa.value);
+      localStorage.setItem('mensagens', JSON.stringify(mensagens));
+      criarCaixa(); // Adiciona nova caixa vazia
+    }
+
+    function apagarMensagens() {
+      const codigo = prompt("Digite o código para apagar todas as mensagens:");
+      if (codigo === '9437') {
+        localStorage.removeItem('mensagens');
+        container.innerHTML = '';
+        mensagens = [];
+        criarCaixa(); // Começa com uma nova
+        alert('🗑️ Mensagens apagadas!');
+      } else {
+        alert('❌ Código incorreto!');
+      }
+    }
+
+    // Se for a primeira vez, adiciona uma caixa
+    if (mensagens.length === 0) criarCaixa();
+  </script>
+</body>
+</html>
